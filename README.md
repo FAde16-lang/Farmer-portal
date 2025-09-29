@@ -6,7 +6,7 @@
 
 This contains everything you need to run your app locally.
 
-View your app in AI Studio: frolicking-mochi-2f814c.netlify.app
+View your app in AI Studio: https://frolicking-mochi-2f814c.netlify.app/
 
 ## Run Locally
 
