@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { User, UserRole } from './types';
 import LoginPage from './pages/LoginPage';
 import FarmerDashboard from './pages/farmer/FarmerDashboard';
+import LabDashboard from './pages/lab/LabDashboard';
+import RegulatorDashboard from './pages/regulator/RegulatorDashboard';
 import { api } from './services/mockApi';
 import Header from './components/Header';
 import Modal from './components/Modal';
@@ -121,7 +123,10 @@ const App: React.FC = () => {
     switch (currentUser.role) {
       case UserRole.FARMER:
         return <FarmerDashboard user={currentUser} />;
-      // Lab and Regulator dashboards removed for farmer-only focus
+      case UserRole.LAB:
+        return <LabDashboard user={currentUser} />;
+      case UserRole.REGULATOR:
+        return <RegulatorDashboard user={currentUser} />;
       default:
         return <div className="p-8">Unknown user role. Please log out and try again.</div>;
     }

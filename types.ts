@@ -1,5 +1,7 @@
 export enum UserRole {
   FARMER = 'Farmer',
+  LAB = 'Lab Worker',
+  REGULATOR = 'Regulator',
 }
 
 interface UserSettings {
