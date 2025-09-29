@@ -2,13 +2,23 @@ export enum UserRole {
   FARMER = 'Farmer',
 }
 
+interface UserSettings {
+  notifications: {
+    sms: boolean;
+    ivr: boolean;
+  };
+  language: string;
+}
+
 export interface User {
   id: string;
   name: string;
   role: UserRole;
+  phone: string;
   password?: string;
   memberSince: string;
   country: string;
+  settings: UserSettings;
 }
 
 export enum BatchStatus {

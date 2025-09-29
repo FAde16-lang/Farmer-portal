@@ -2,6 +2,7 @@
   "name": "AyurTrace",
   "description": "A blockchain-based traceability and compliance portal for the Ayurvedic herbal supply chain. Features role-based dashboards for Farmers, Lab Workers, and AYUSH Regulators.",
   "requestFramePermissions": [
-    "geolocation"
+    "geolocation",
+    "camera"
   ]
 }

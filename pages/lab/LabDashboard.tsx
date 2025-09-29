@@ -76,7 +76,7 @@ const LabDashboard: React.FC<LabDashboardProps> = ({ user }) => {
   return (
     <div className="p-4 sm:p-6 lg:p-8">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">Lab Testing Queue</h2>
-      <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">

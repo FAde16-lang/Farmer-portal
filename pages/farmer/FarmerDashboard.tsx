@@ -4,19 +4,20 @@ import { api } from '../../services/mockApi';
 import Modal from '../../components/Modal';
 import { LeafIcon, UploadIcon, CheckCircleIcon, XCircleIcon, ExclamationIcon, ShieldCheckIcon, PhoneIcon, RupeeIcon, RibbonIcon, TrendUpIcon, LocationMarkerIcon } from '../../components/Icons';
 
-interface FarmerDashboardProps {
-  user: User;
-}
-
 // --- Helper Components ---
 
 const getStatusPill = (status: BatchStatus) => {
-  const baseClasses = "px-2 py-0.5 text-xs font-medium rounded-full inline-flex items-center space-x-1";
+  const baseClasses = "px-2.5 py-1 text-xs font-semibold rounded-full inline-flex items-center space-x-1.5";
   switch (status) {
     case BatchStatus.APPROVED:
-      return <span className={`${baseClasses} text-green-800 bg-green-100`}><CheckCircleIcon className="w-3 h-3" /><span>Approved</span></span>;
+      return <span className={`${baseClasses} text-emerald-800 bg-emerald-100`}><CheckCircleIcon className="w-3.5 h-3.5" /><span>Approved</span></span>;
+    case BatchStatus.REJECTED:
+      return <span className={`${baseClasses} text-red-800 bg-red-100`}><XCircleIcon className="w-3.5 h-3.5" /><span>Rejected</span></span>;
+    case BatchStatus.RECALLED:
+      return <span className={`${baseClasses} text-indigo-800 bg-indigo-100`}><ShieldCheckIcon className="w-3.5 h-3.5" /><span>Recalled</span></span>;
+    case BatchStatus.PENDING:
     default:
-       return <span className={`${baseClasses} text-yellow-800 bg-yellow-100`}><ExclamationIcon className="w-3 h-3" /><span>Pending</span></span>;
+       return <span className={`${baseClasses} text-amber-800 bg-amber-100`}><ExclamationIcon className="w-3.5 h-3.5" /><span>Pending</span></span>;
   }
 };
 
@@ -36,7 +37,7 @@ const MapDisplay = ({ latitude, longitude }: { latitude: number, longitude: numb
             frameBorder="0"
             scrolling="no"
             src={mapUrl}
-            className="rounded-lg border border-gray-300"
+            className="rounded-xl border border-stone-200"
             title="Harvest Location"
         ></iframe>
     );
@@ -49,48 +50,52 @@ interface StatCardProps {
     change: string;
 }
 const StatCard: React.FC<StatCardProps> = ({icon, title, value, change}) => (
-    <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex flex-col justify-between">
+    <div className="bg-white p-6 rounded-2xl shadow-md border border-stone-100 transition-shadow hover:shadow-xl">
         <div className="flex justify-between items-start">
-            <div className="p-3 bg-green-100 rounded-lg">
+            <div className="p-3 bg-emerald-100 rounded-xl">
                 {icon}
             </div>
-            <div className="flex items-center space-x-1 text-sm text-green-600 font-semibold">
+            <div className="flex items-center space-x-1 text-sm text-emerald-600 font-semibold">
                 <TrendUpIcon className="w-4 h-4" />
                 <span>{change}</span>
             </div>
         </div>
         <div>
-            <p className="text-2xl font-bold text-gray-800 mt-4">{value}</p>
-            <p className="text-sm text-gray-500">{title}</p>
+            <p className="text-3xl font-bold text-gray-800 mt-5">{value}</p>
+            <p className="text-sm text-stone-500">{title}</p>
         </div>
     </div>
 );
 
 const HarvestCard: React.FC<{batch: Batch, onClick: () => void}> = ({ batch, onClick }) => (
-    <div onClick={onClick} className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 cursor-pointer hover:shadow-md transition-shadow">
-        <div className="flex items-start space-x-4">
-            <img src={batch.imageUrl} alt={batch.plantName} className="w-20 h-20 rounded-lg object-cover" />
-            <div className="flex-1">
-                <div className="flex justify-between items-center">
-                    <h3 className="font-bold text-gray-800">{batch.plantName}</h3>
-                    {getStatusPill(batch.status)}
-                </div>
-                <div className="text-sm text-gray-500 space-y-1 mt-1">
-                    <p>{new Date(batch.timestamp).toLocaleDateString()}</p>
-                    <p className="flex items-center space-x-1"><LocationMarkerIcon className="w-4 h-4" /> <span>{batch.address?.split(',')[0] || 'Unknown location'}</span></p>
-                </div>
+    <div onClick={onClick} className="bg-white p-5 rounded-2xl shadow-md border border-stone-100 cursor-pointer hover:shadow-xl hover:border-emerald-300 transition-all transform hover:-translate-y-1 space-y-3">
+        <div className="flex justify-between items-start">
+            <div>
+                 <h3 className="font-bold text-lg text-gray-800">{batch.plantName}</h3>
+                 <p className="text-sm text-stone-500">{new Date(batch.timestamp).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
             </div>
-            <CheckCircleIcon className="w-6 h-6 text-green-500" />
+             {getStatusPill(batch.status)}
         </div>
-        <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center text-sm">
-            <div className="text-gray-600"><span className="font-bold">{batch.ivrData?.quantity || 'N/A'}</span></div>
-            <div className="text-gray-600">Quality: <span className="font-bold">{batch.qualityScore.toFixed(1)}%</span></div>
-            <div className="text-green-700 font-bold text-base">₹{batch.earnings.toLocaleString('en-IN')}</div>
+        <div className="pt-3 border-t border-stone-100 space-y-3 text-sm">
+            <div className="flex justify-between items-center">
+                <span className="text-stone-500">Batch ID</span>
+                <span className="font-semibold font-mono text-stone-700 bg-stone-100 px-2 py-0.5 rounded">{batch.id}</span>
+            </div>
+            <div className="flex justify-between items-center">
+                <span className="text-stone-500">Earnings</span>
+                <span className="font-bold text-emerald-600 text-base">₹{batch.earnings.toLocaleString('en-IN')}</span>
+            </div>
         </div>
     </div>
 );
 
+
 // --- Main Component ---
+
+// FIX: Define FarmerDashboardProps interface to specify the component's props.
+interface FarmerDashboardProps {
+  user: User;
+}
 
 const FarmerDashboard: React.FC<FarmerDashboardProps> = ({ user }) => {
   const [batches, setBatches] = useState<Batch[]>([]);
@@ -136,15 +141,10 @@ const FarmerDashboard: React.FC<FarmerDashboardProps> = ({ user }) => {
     fetchBatches();
   }, [fetchBatches]);
 
-  const stats = useMemo(() => {
-    const totalHarvests = batches.length;
-    const totalEarnings = batches.reduce((sum, b) => sum + b.earnings, 0);
-    const avgQuality = totalHarvests > 0 ? batches.reduce((sum, b) => sum + b.qualityScore, 0) / totalHarvests : 0;
-    const approved = batches.filter(b => b.status === BatchStatus.APPROVED).length;
-    return { totalHarvests, totalEarnings, avgQuality, approved };
-  }, [batches]);
-
-  const resetNewBatchForm = () => {
+  const resetNewBatchForm = useCallback(() => {
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview);
+    }
     setPlantImage(null);
     setImagePreview(null);
     setPlantName('');
@@ -156,14 +156,37 @@ const FarmerDashboard: React.FC<FarmerDashboardProps> = ({ user }) => {
     setIsSubmitting(false);
     setIsGettingLocation(false);
     setIsFetchingAddress(false);
-  };
+  }, [imagePreview]);
+  
+  const handleOpenNewHarvestModal = useCallback(() => {
+      resetNewBatchForm();
+      setIsNewBatchModalOpen(true);
+  }, [resetNewBatchForm]);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    document.addEventListener('openNewHarvestModal', handleOpenNewHarvestModal);
+    return () => {
+      document.removeEventListener('openNewHarvestModal', handleOpenNewHarvestModal);
+    };
+  }, [handleOpenNewHarvestModal]);
+
+  const stats = useMemo(() => {
+    const totalHarvests = batches.length;
+    const totalEarnings = batches.reduce((sum, b) => sum + b.earnings, 0);
+    const avgQuality = totalHarvests > 0 ? batches.reduce((sum, b) => sum + b.qualityScore, 0) / totalHarvests : 0;
+    const approved = batches.filter(b => b.status === BatchStatus.APPROVED).length;
+    return { totalHarvests, totalEarnings, avgQuality, approved };
+  }, [batches]);
+
+  const handleFileChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      resetNewBatchForm();
+      if (imagePreview) {
+          URL.revokeObjectURL(imagePreview);
+      }
       setPlantImage(file);
-      setImagePreview(URL.createObjectURL(file));
+      const newImagePreview = URL.createObjectURL(file);
+      setImagePreview(newImagePreview);
 
       setIsGettingLocation(true);
       setLocationError('');
@@ -196,14 +219,14 @@ const FarmerDashboard: React.FC<FarmerDashboardProps> = ({ user }) => {
         .catch(error => alert("Could not recognize the plant."))
         .finally(() => setIsRecognizing(false));
     }
-  };
+  }, [imagePreview]);
   
-  const handleInitiateSubmit = () => {
+  const handleInitiateSubmit = useCallback(() => {
       if (!plantName || !location || !user) return;
       setIsIvrModalOpen(true);
-  };
+  }, [plantName, location, user]);
 
-  const handleConfirmIvrAndSubmit = async (e: React.FormEvent) => {
+  const handleConfirmIvrAndSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!plantName || !location || !user) return;
     
@@ -231,56 +254,57 @@ const FarmerDashboard: React.FC<FarmerDashboardProps> = ({ user }) => {
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [user, plantName, confidence, location, address, ivrData, fetchBatches, resetNewBatchForm]);
 
-  const handleViewDetails = (batch: Batch) => {
+  const handleViewDetails = useCallback((batch: Batch) => {
     setSelectedBatch(batch);
     setIsDetailModalOpen(true);
-  };
+  }, []);
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-8">
         {/* Welcome Banner */}
-        <div className="bg-green-600 text-white p-6 rounded-xl shadow-lg">
-            <div className="flex justify-between items-start">
+        <div className="bg-emerald-700 text-white p-8 rounded-2xl shadow-lg relative overflow-hidden">
+             <div className="absolute -top-10 -right-10 w-48 h-48 bg-white/10 rounded-full"></div>
+             <div className="absolute bottom-10 -left-20 w-60 h-60 bg-white/10 rounded-full"></div>
+            <div className="flex justify-between items-start relative z-10">
                 <div>
-                    <h2 className="text-2xl font-bold">Welcome, {user.name.split(' ')[0]} 👋</h2>
-                    <p className="text-green-100 mt-1">Track your harvests and earnings with blockchain transparency</p>
-                    <div className="flex items-center space-x-4 text-sm mt-4 text-green-200">
-                        <span className="flex items-center"><LocationMarkerIcon className="w-4 h-4 mr-1" /> {user.country}</span>
-                        <span>Member since {new Date(user.memberSince).getFullYear()}</span>
-                    </div>
+                    <h2 className="text-3xl font-bold">Welcome, {user.name.split(' ')[0]} 👋</h2>
+                    <p className="text-emerald-100 mt-2 max-w-lg">Here's your dashboard overview for today. Keep up the great work in bringing authentic Ayurvedic herbs to the world.</p>
                 </div>
                 <button
-                  onClick={() => setIsNewBatchModalOpen(true)}
-                  className="hidden sm:inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-green-700 bg-white hover:bg-green-50"
+                  onClick={handleOpenNewHarvestModal}
+                  className="hidden sm:inline-flex items-center justify-center px-5 py-3 border border-transparent text-sm font-semibold rounded-full shadow-sm text-emerald-700 bg-white hover:bg-emerald-50 transition-colors"
                 >
-                  + New Harvest
+                  + Add New Harvest
                 </button>
             </div>
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <StatCard icon={<LeafIcon className="w-6 h-6 text-green-600" />} title="Total Harvests" value={stats.totalHarvests.toString()} change="+12%" />
-            <StatCard icon={<RupeeIcon className="w-6 h-6 text-green-600" />} title="Total Earnings" value={`₹${stats.totalEarnings.toLocaleString('en-IN')}`} change="+23%" />
-            <StatCard icon={<RibbonIcon className="w-6 h-6 text-green-600" />} title="Avg. Quality" value={`${stats.avgQuality.toFixed(1)}%`} change="+5%" />
-            <StatCard icon={<CheckCircleIcon className="w-6 h-6 text-green-600" />} title="Approved" value={stats.approved.toString()} change="+8%" />
+            <StatCard icon={<LeafIcon className="w-7 h-7 text-emerald-600" />} title="Total Harvests" value={stats.totalHarvests.toString()} change="+12%" />
+            <StatCard icon={<RupeeIcon className="w-7 h-7 text-emerald-600" />} title="Total Earnings" value={`₹${stats.totalEarnings.toLocaleString('en-IN')}`} change="+23%" />
+            <StatCard icon={<RibbonIcon className="w-7 h-7 text-emerald-600" />} title="Avg. Quality Score" value={`${stats.avgQuality.toFixed(1)}%`} change="+5%" />
+            <StatCard icon={<CheckCircleIcon className="w-7 h-7 text-emerald-600" />} title="Approved Batches" value={stats.approved.toString()} change="+8%" />
         </div>
 
         {/* Recent Harvests */}
         <div>
             <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold text-gray-800">Recent Harvests</h3>
-                <a href="#" className="text-sm font-medium text-green-600 hover:text-green-800">View All</a>
+                <h3 className="text-2xl font-bold text-gray-800">Recent Harvests</h3>
+                <a href="#" className="text-sm font-semibold text-emerald-600 hover:text-emerald-800">View All</a>
             </div>
             {isLoading ? (
-                <div className="text-center py-8">Loading harvests...</div>
+                <div className="text-center py-12 text-stone-500">Loading harvests...</div>
             ) : batches.length === 0 ? (
-                <div className="text-center py-8 text-gray-500 bg-white rounded-xl border border-gray-200">You haven't submitted any harvests yet.</div>
+                <div className="text-center py-12 text-stone-500 bg-white rounded-2xl border-2 border-dashed border-stone-200">
+                    <p className="font-semibold">No harvests yet!</p>
+                    <p className="text-sm">Click "+ Add New Harvest" to get started.</p>
+                </div>
             ) : (
-                <div className="grid grid-cols-1 gap-4">
-                    {batches.slice(0, 3).map(batch => (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {batches.slice(0, 6).map(batch => (
                         <HarvestCard key={batch.id} batch={batch} onClick={() => handleViewDetails(batch)} />
                     ))}
                 </div>
@@ -295,20 +319,20 @@ const FarmerDashboard: React.FC<FarmerDashboardProps> = ({ user }) => {
             <label htmlFor="plant-image-upload" className="block text-sm font-medium text-gray-700 mb-2">
               1. Upload Plant Image
             </label>
-            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl">
               <div className="space-y-1 text-center">
                 {imagePreview ? (
-                    <img src={imagePreview} alt="Plant preview" className="mx-auto h-32 w-auto rounded-md"/>
+                    <img src={imagePreview} alt="Plant preview" className="mx-auto h-40 w-auto rounded-lg shadow-sm"/>
                 ) : (
                     <UploadIcon className="mx-auto h-12 w-12 text-gray-400" />
                 )}
-                <div className="flex text-sm text-gray-600">
-                  <label htmlFor="plant-image-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-green-600 hover:text-green-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-green-500">
-                    <span>Upload a file</span>
+                <div className="flex text-sm text-gray-600 justify-center">
+                  <label htmlFor="plant-image-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500">
+                    <span>{imagePreview ? 'Change image' : 'Upload a file'}</span>
                     <input id="plant-image-upload" name="plant-image-upload" type="file" className="sr-only" onChange={handleFileChange} accept="image/*" />
                   </label>
                 </div>
-                <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                {!imagePreview && <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>}
               </div>
             </div>
           </div>
@@ -323,7 +347,7 @@ const FarmerDashboard: React.FC<FarmerDashboardProps> = ({ user }) => {
                     <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">{locationError}</div>
                   ) : location ? (
                     <div className="mt-2 space-y-2">
-                        <div className="p-2 bg-blue-50 border border-blue-200 rounded-md text-blue-800 text-sm space-y-1">
+                        <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-blue-800 text-sm space-y-1">
                             <p><strong>Coordinates:</strong> {location.latitude.toFixed(4)}, {location.longitude.toFixed(4)}</p>
                             {isFetchingAddress ? (
                                 <p>Fetching address...</p>
@@ -341,9 +365,9 @@ const FarmerDashboard: React.FC<FarmerDashboardProps> = ({ user }) => {
                   {isRecognizing ? (
                      <div className="mt-2 text-center text-gray-500">Recognizing...</div>
                   ) : plantName ? (
-                    <div className="mt-2 p-4 bg-green-50 border border-green-200 rounded-md">
-                        <p className="font-semibold text-green-800">Plant: <span className="text-lg">{plantName}</span></p>
-                        <p className="text-sm text-green-700">Confidence: {confidence.toFixed(1)}%</p>
+                    <div className="mt-2 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+                        <p className="font-semibold text-emerald-800">Plant: <span className="text-xl">{plantName}</span></p>
+                        <p className="text-sm text-emerald-700">Confidence: {confidence.toFixed(1)}%</p>
                     </div>
                   ) : (
                     <div className="mt-2 text-center text-gray-500">Upload an image to see the result.</div>
@@ -357,7 +381,7 @@ const FarmerDashboard: React.FC<FarmerDashboardProps> = ({ user }) => {
                     type="button"
                     onClick={handleInitiateSubmit}
                     disabled={!plantName || !location || isRecognizing || isSubmitting || isGettingLocation || isFetchingAddress}
-                    className="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-gray-300"
+                    className="w-full inline-flex justify-center py-3 px-4 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
                   >
                     Submit Batch
                   </button>
@@ -371,30 +395,30 @@ const FarmerDashboard: React.FC<FarmerDashboardProps> = ({ user }) => {
       <Modal isOpen={isIvrModalOpen} onClose={() => setIsIvrModalOpen(false)} title="IVR Confirmation">
         {/* IVR Modal Content remains the same */}
         <form onSubmit={handleConfirmIvrAndSubmit} className="space-y-4">
-            <div className="flex items-center justify-center text-center p-4 bg-blue-50 rounded-lg">
-                <PhoneIcon className="w-8 h-8 text-blue-500 mr-4"/>
+            <div className="flex items-center text-left p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+                <PhoneIcon className="w-8 h-8 text-emerald-600 mr-4 flex-shrink-0"/>
                 <div>
-                    <h3 className="font-semibold text-gray-800">Simulating IVR Call...</h3>
-                    <p className="text-sm text-gray-600">Please confirm the details for this batch.</p>
+                    <h3 className="font-semibold text-emerald-900">Confirm Harvest Details</h3>
+                    <p className="text-sm text-emerald-800">An IVR call is simulated. Please verify the quantity before final submission.</p>
                 </div>
             </div>
             <div>
                 <label htmlFor="farmerName" className="block text-sm font-medium text-gray-700">Farmer Name</label>
-                <input type="text" id="farmerName" value={ivrData.farmerName} onChange={e => setIvrData({...ivrData, farmerName: e.target.value})} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm" />
+                <input type="text" id="farmerName" value={ivrData.farmerName} onChange={e => setIvrData({...ivrData, farmerName: e.target.value})} required className="mt-1 block w-full border border-stone-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm bg-white text-gray-900" />
             </div>
              <div>
                 <label htmlFor="plantType" className="block text-sm font-medium text-gray-700">Plant Type</label>
-                <input type="text" id="plantType" value={ivrData.plantType} onChange={e => setIvrData({...ivrData, plantType: e.target.value})} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm" />
+                <input type="text" id="plantType" value={ivrData.plantType} onChange={e => setIvrData({...ivrData, plantType: e.target.value})} required className="mt-1 block w-full border border-stone-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm bg-white text-gray-900" />
             </div>
              <div>
                 <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">Quantity (e.g., 50kg)</label>
-                <input type="text" id="quantity" value={ivrData.quantity} onChange={e => setIvrData({...ivrData, quantity: e.target.value})} required className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm" />
+                <input type="text" id="quantity" value={ivrData.quantity} onChange={e => setIvrData({...ivrData, quantity: e.target.value})} required className="mt-1 block w-full border border-stone-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm bg-white text-gray-900" />
             </div>
             <div className="pt-4 flex justify-end">
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full inline-flex justify-center items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-gray-400"
+                    className="w-full inline-flex justify-center items-center py-2.5 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:bg-gray-400"
                 >
                     {isSubmitting && <LoadingSpinner />}
                     {isSubmitting ? 'Confirming...' : 'Confirm and Submit Batch'}
@@ -411,13 +435,13 @@ const FarmerDashboard: React.FC<FarmerDashboardProps> = ({ user }) => {
               <img 
                 src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(newBatchBlockchainId)}`} 
                 alt="Batch QR Code"
-                className="mx-auto border-4 border-gray-300 rounded-lg"
+                className="mx-auto border-4 border-stone-300 rounded-lg"
               />
-              <div className="mt-4 p-2 bg-gray-100 rounded">
-                <p className="text-xs text-gray-600">Blockchain ID:</p>
-                <code className="text-xs break-all text-gray-800">{newBatchBlockchainId}</code>
+              <div className="mt-4 p-2 bg-stone-100 rounded">
+                <p className="text-xs text-stone-600">Blockchain ID:</p>
+                <code className="text-xs break-all text-stone-800">{newBatchBlockchainId}</code>
               </div>
-              <button onClick={() => setIsQrModalOpen(false)} className="mt-6 w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+              <button onClick={() => setIsQrModalOpen(false)} className="mt-6 w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
                   Done
               </button>
           </div>
@@ -427,38 +451,38 @@ const FarmerDashboard: React.FC<FarmerDashboardProps> = ({ user }) => {
         {/* Detail Modal Content remains the same */}
         {selectedBatch && (
           <div className="space-y-4">
-             <div className="w-full rounded-lg overflow-hidden border border-gray-300">
+             <div className="w-full rounded-lg overflow-hidden border border-stone-300">
                 <MapDisplay latitude={selectedBatch.location.latitude} longitude={selectedBatch.location.longitude} />
             </div>
-            <div className="p-4 bg-gray-50 rounded-lg border">
-                <h4 className="font-semibold mb-3 text-gray-700 text-center">Blockchain & Traceability</h4>
+            <div className="p-4 bg-stone-50 rounded-lg border">
+                <h4 className="font-semibold mb-3 text-stone-700 text-center">Blockchain & Traceability</h4>
                 <div className="flex flex-col sm:flex-row items-center gap-4">
                     <div className="flex-shrink-0">
                         <img 
                           src={`https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(selectedBatch.blockchainId)}`} 
                           alt="Batch QR Code"
-                          className="border-2 border-gray-300 rounded-md"
+                          className="border-2 border-stone-300 rounded-md"
                         />
                     </div>
                     <div className="text-center sm:text-left">
-                        <p className="text-xs text-gray-600 font-semibold">Blockchain ID:</p>
-                        <code className="text-xs break-all text-gray-800">{selectedBatch.blockchainId}</code>
-                        <p className="text-xs text-gray-500 mt-2">Scan the QR code to access this batch's traceability record on the blockchain.</p>
+                        <p className="text-xs text-stone-600 font-semibold">Blockchain ID:</p>
+                        <code className="text-xs break-all text-stone-800">{selectedBatch.blockchainId}</code>
+                        <p className="text-xs text-stone-500 mt-2">Scan the QR code to access this batch's traceability record on the blockchain.</p>
                     </div>
                 </div>
             </div>
 
-            <div className="p-4 bg-gray-50 rounded-lg border">
-                <h4 className="font-semibold mb-2 text-gray-700">Farmer Details</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-800">
+            <div className="p-4 bg-stone-50 rounded-lg border">
+                <h4 className="font-semibold mb-2 text-stone-700">Farmer Details</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-stone-800">
                     <div><strong>Name:</strong> {user.name}</div>
                     <div><strong>Farmer ID:</strong> {selectedBatch.farmerId}</div>
                 </div>
             </div>
 
-            <div className="p-4 bg-gray-50 rounded-lg border">
-                 <h4 className="font-semibold mb-2 text-gray-700">Crop & Harvest Details</h4>
-                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-800">
+            <div className="p-4 bg-stone-50 rounded-lg border">
+                 <h4 className="font-semibold mb-2 text-stone-700">Crop & Harvest Details</h4>
+                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-stone-800">
                     <div><strong>Plant Name:</strong> {selectedBatch.plantName}</div>
                     <div><strong>AI Confidence:</strong> {selectedBatch.confidence.toFixed(1)}%</div>
                     <div><strong>Status:</strong> {getStatusPill(selectedBatch.status)}</div>
@@ -471,7 +495,7 @@ const FarmerDashboard: React.FC<FarmerDashboardProps> = ({ user }) => {
             </div>
            
             {selectedBatch.labResult && (
-                <div className={`p-4 rounded-md mt-4 ${selectedBatch.labResult.result === 'Pass' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
+                <div className={`p-4 rounded-md mt-4 ${selectedBatch.labResult.result === 'Pass' ? 'bg-emerald-50 text-emerald-800' : 'bg-red-50 text-red-800'}`}>
                     <h4 className="font-semibold mb-2">Lab Result</h4>
                     <p><strong>File:</strong> {selectedBatch.labResult.fileName}</p>
                     <p><strong>Result:</strong> {selectedBatch.labResult.result}</p>

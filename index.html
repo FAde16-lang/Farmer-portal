@@ -3,9 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AyushTrace</title>
+    <title>AyurTrace</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+      :root {
+        --color-primary: #047857; /* emerald-700 */
+        --color-primary-hover: #065f46; /* emerald-800 */
+        --color-primary-light: #10b981; /* emerald-500 */
+        --color-primary-bg: #ecfdf5; /* emerald-50 */
+        --color-accent: #f59e0b; /* amber-500 */
+        --color-text-base: #262626; /* neutral-800 */
+        --color-text-muted: #737373; /* neutral-500 */
+        --color-bg-base: #f3f4f6; /* gray-100 */
+        --color-surface: #ffffff;
+        --color-border: #e7e5e4; /* stone-200 */
+      }
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--color-bg-base);
+        color: var(--color-text-base);
+      }
       /* Custom scrollbar for better aesthetics */
       ::-webkit-scrollbar {
         width: 8px;
@@ -15,7 +35,7 @@
         background: #f1f1f1;
       }
       ::-webkit-scrollbar-thumb {
-        background: #888;
+        background: #a8a8a8;
         border-radius: 4px;
       }
       ::-webkit-scrollbar-thumb:hover {
@@ -33,7 +53,7 @@
 }
 </script>
 </head>
-  <body class="bg-green-50">
+  <body>
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>

@@ -108,14 +108,14 @@ const RegulatorDashboard: React.FC<RegulatorDashboardProps> = ({ user }) => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white p-4 rounded-lg shadow border-l-4 border-blue-500"><h3 className="text-sm font-medium text-gray-500">Total Batches</h3><p className="mt-1 text-3xl font-semibold text-gray-900">{stats.total}</p></div>
-        <div className="bg-white p-4 rounded-lg shadow border-l-4 border-green-500"><h3 className="text-sm font-medium text-gray-500">Approved</h3><p className="mt-1 text-3xl font-semibold text-gray-900">{stats.approved}</p></div>
-        <div className="bg-white p-4 rounded-lg shadow border-l-4 border-red-500"><h3 className="text-sm font-medium text-gray-500">Rejected</h3><p className="mt-1 text-3xl font-semibold text-gray-900">{stats.rejected}</p></div>
-        <div className="bg-white p-4 rounded-lg shadow border-l-4 border-purple-500"><h3 className="text-sm font-medium text-gray-500">Active Recalls</h3><p className="mt-1 text-3xl font-semibold text-gray-900">{stats.recalled}</p></div>
+        <div className="bg-white p-4 rounded-lg shadow-lg border-l-4 border-blue-500"><h3 className="text-sm font-medium text-gray-500">Total Batches</h3><p className="mt-1 text-3xl font-semibold text-gray-900">{stats.total}</p></div>
+        <div className="bg-white p-4 rounded-lg shadow-lg border-l-4 border-green-500"><h3 className="text-sm font-medium text-gray-500">Approved</h3><p className="mt-1 text-3xl font-semibold text-gray-900">{stats.approved}</p></div>
+        <div className="bg-white p-4 rounded-lg shadow-lg border-l-4 border-red-500"><h3 className="text-sm font-medium text-gray-500">Rejected</h3><p className="mt-1 text-3xl font-semibold text-gray-900">{stats.rejected}</p></div>
+        <div className="bg-white p-4 rounded-lg shadow-lg border-l-4 border-purple-500"><h3 className="text-sm font-medium text-gray-500">Active Recalls</h3><p className="mt-1 text-3xl font-semibold text-gray-900">{stats.recalled}</p></div>
       </div>
       
       {/* Traceability Table */}
-      <div className="bg-white rounded-lg shadow-md border border-gray-200">
+      <div className="bg-white rounded-lg shadow-xl border border-gray-200">
         <div className="p-4 border-b">
           <h3 className="text-lg font-semibold">Supply Chain Traceability</h3>
           <div className="mt-4 flex flex-col sm:flex-row gap-4">
